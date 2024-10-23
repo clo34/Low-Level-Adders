@@ -1,0 +1,45 @@
+////////////////////////////////////////////////////////
+// RCA32.sv  This design will add two 32-bit vectors //
+// plus a carry in to produce a sum and a carry out //
+/////////////////////////////////////////////////////
+module RCA32(
+  input 	[31:0]	A,B,	// two 32-bit vectors to be added
+  input 			Cin,	// An optional carry in bit
+  output 	[31:0]	S,		// 32-bit Sum
+  output 			Cout  	// and carry out
+);
+
+	/////////////////////////////////////////////////
+	// Declare any internal signals as type logic //
+	///////////////////////////////////////////////
+	wire [31:0] Carries;	// this is driven by .Cout of FA and will
+							// in a "promoted" form drive .Cin of FA's
+	
+	/////////////////////////////////////////////////
+	// Implement Full Adder as structural verilog //
+	///////////////////////////////////////////////
+	//<< You fill in vectored instantiation of 32 FA cells >>
+	//<< Also remember a line to drive Cout of top level with Carries[31] >>
+	logic [31:0] Carries;
+	
+	// Assign initial carry-in
+  	assign Carries[0] = Cin;
+
+	 // Generate block for instantiating 32 Full Adders (FA)
+  	genvar i;
+  	generate
+    	for (i = 0; i < 32; i = i + 1) begin : FA_Block
+      		FA FA_inst (
+        	.A(A[i]), 
+        	.B(B[i]), 
+        	.Cin(Carries[i]), 
+        	.S(S[i]), 
+        	.Cout(Carries[i + 1])
+      	);
+    		end
+  	endgenerate
+
+  	// Assign final carry-out
+  	assign Cout = Carries[32];
+	
+endmodule
